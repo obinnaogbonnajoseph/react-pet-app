@@ -20,7 +20,7 @@ class Carousel extends Component {
         const { images } = this.props;
         return (
             <div className="carousel">
-                <img src={images[active].full} alt="animal" />
+                <img src={images[active]?.full ?? Carousel.defaultProps.images[0]} alt="animal" />
                 <div className="carousel-smaller">
                     {images.map((photo, index) => (
                         <img

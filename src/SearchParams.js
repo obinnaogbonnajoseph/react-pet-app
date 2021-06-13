@@ -5,9 +5,6 @@ import useBreedList from "./useBreedList";
 import ThemeContext from './ThemeContext';
 import client from "./client";
 
-const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
-
-
 const SearchParams = () => {
     const [theme, setTheme] = useContext(ThemeContext);
     const [animal, updateAnimal] = useState();
@@ -18,6 +15,7 @@ const SearchParams = () => {
     const [breed, updateBreed] = useState();
     const [pets, setPets] = useState([]);
     const [breeds] = useBreedList(animal);
+    const [types, setTypes] = useState([]);
 
     useEffect(() => {
         requestPets();
@@ -27,9 +25,11 @@ const SearchParams = () => {
         setLoading(true);
         const data = processData();
         const { data: { animals, pagination } } = await client.animal.search(data);
+        const { data: { types } } = await client.animalData.types();
         const hasNextPage = pagination.current_page < pagination.total_pages
         setPets(animals);
         setHasNext(hasNextPage);
+        setTypes(types.map(type => type.name))
         setLoading(false);
     }
 
@@ -46,7 +46,6 @@ const SearchParams = () => {
             page,
             limit: 20
         };
-        console.log('**** data to be processed ****', data);
         for (let key in data) {
             if (data[key] !== undefined && data[key] !== null) {
                 outputData[key] = data[key]
@@ -75,7 +74,7 @@ const SearchParams = () => {
                         onChange={(e) => updateAnimal(e.target.value)}
                         onBlur={(e) => updateAnimal(e.target.value)}>
                         <option />
-                        {ANIMALS.map((animal) => (
+                        {types.map((animal) => (
                             <option key={animal} value={animal}>
                                 {animal}
                             </option>

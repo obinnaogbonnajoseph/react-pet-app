@@ -47,6 +47,8 @@
     padding: 15px;
     float: left;
     margin-bottom: 25px;
+    max-height: 60vh;
+    overflow-y: scroll;
   }
   
   .details {
@@ -331,6 +333,7 @@
   
     .search {
       width: 100%;
+      height: fit-content;
     }
   }
   
