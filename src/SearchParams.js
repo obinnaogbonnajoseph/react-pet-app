@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Results from "./Results";
+import Paginator from "./Paginator";
 import useBreedList from "./useBreedList";
 import ThemeContext from './ThemeContext';
 
@@ -8,22 +9,30 @@ const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 const SearchParams = () => {
     const [theme, setTheme] = useContext(ThemeContext);
     const [animal, updateAnimal] = useState('');
+    const [page, setPage] = useState(0);
+    const [hasNext, setHasNext] = useState(true);
     const [location, updateLocation] = useState('');
     const [breed, updateBreed] = useState('');
     const [pets, setPets] = useState([]);
-    const [breeds] = useBreedList(animal)
+    const [breeds] = useBreedList(animal);
 
     useEffect(() => {
-        requestPets();
+        requestPets(page);
     }, [])
 
-    async function requestPets() {
+    async function requestPets(page) {
         const res = await fetch(
-            `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
+            `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}&page=${page}`
         );
         const json = await res.json();
 
-        setPets(json.pets)
+        setPets(json.pets);
+        setHasNext(json.hasNext);
+    }
+
+    const handlePageChange = async (newPage) => {
+        setPage(newPage);
+        await requestPets(newPage);
     }
 
     return (
@@ -34,7 +43,7 @@ const SearchParams = () => {
             }}>
                 <label htmlFor="location">
                     location
-                <input id="location"
+                    <input id="location"
                         onChange={(e) => updateLocation(e.target.value)}
                         value={location} placeholder="Location" />
                 </label>
@@ -84,7 +93,8 @@ const SearchParams = () => {
                 </label>
                 <button style={{ backgroundColor: theme }}>Submit</button>;
             </form>
-            <Results pets={pets} />;
+            <Results pets={pets} />
+            <Paginator page={page} hasNext={hasNext} handlePageChange={handlePageChange} />
         </div>
     );
 };
