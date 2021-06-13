@@ -26,9 +26,15 @@
   }
 
   .paginator-wrapper {
+   width: 100%;
+   display: grid;
+   grid-template-columns: minmax(360px, 25%) 1fr;
+  }
+
+  .paginator-wrapper .page-buttons {
+    width: 715px;
     display: flex;
     flex-direction: row;
-    width: 715px;
     justify-content: center;
     align-items: center;
   }
@@ -208,7 +214,7 @@
     margin: 0 auto;
     cursor: pointer;
   }
-  
+
   .search-params button:hover {
     background-color: #122622;
   }
@@ -219,6 +225,11 @@
   
   .search-params button:focus {
     border: 1px solid cornflowerblue;
+  }
+
+  .search-params button:disabled {
+    background-color: gray;
+    pointer-events: none;
   }
   
   #modal {
@@ -277,10 +288,6 @@
       float: left;
       margin-bottom: 25px;
     }
-
-    .paginator-wrapper {
-      width: 55%;
-    }
   
     .details {
       width: 95%;
@@ -313,6 +320,14 @@
     .search-params {
       width: 95%;
     }
+
+    .paginator-wrapper .paginator-left {
+      display: none;
+    }
+
+    .paginator-wrapper .page-buttons {
+      width: 100%;
+    }
   
     .search {
       width: 100%;
@@ -336,5 +351,13 @@
     .carousel-smaller > img {
       width: 60px;
       height: 60px;
+    }
+
+    .paginator-wrapper .paginator-left {
+      display: none;
+    }
+
+    .paginator-wrapper .page-buttons {
+      width: 100%;
     }
   }
