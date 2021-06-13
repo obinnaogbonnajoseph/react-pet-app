@@ -17,10 +17,13 @@ class Carousel extends Component {
 
     render() {
         const { active } = this.state;
-        const { images } = this.props;
+        let { images } = this.props;
+        if (images.length === 0) {
+            images = Carousel.defaultProps.images;
+        }
         return (
             <div className="carousel">
-                <img src={images[active]?.full ?? Carousel.defaultProps.images[0]} alt="animal" />
+                <img src={images[active].full} alt="animal" />
                 <div className="carousel-smaller">
                     {images.map((photo, index) => (
                         <img
