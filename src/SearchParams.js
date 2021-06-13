@@ -3,36 +3,56 @@ import Results from "./Results";
 import Paginator from "./Paginator";
 import useBreedList from "./useBreedList";
 import ThemeContext from './ThemeContext';
+import client from "./client";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
+
 const SearchParams = () => {
     const [theme, setTheme] = useContext(ThemeContext);
-    const [animal, updateAnimal] = useState('');
-    const [page, setPage] = useState(0);
+    const [animal, updateAnimal] = useState();
+    const [page, setPage] = useState(1);
     const [hasNext, setHasNext] = useState(true);
-    const [location, updateLocation] = useState('');
-    const [breed, updateBreed] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [location, updateLocation] = useState();
+    const [breed, updateBreed] = useState();
     const [pets, setPets] = useState([]);
     const [breeds] = useBreedList(animal);
 
     useEffect(() => {
-        requestPets(page);
+        requestPets();
     }, [])
 
-    async function requestPets(page) {
-        const res = await fetch(
-            `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}&page=${page}`
-        );
-        const json = await res.json();
-
-        setPets(json.pets);
-        setHasNext(json.hasNext);
+    async function requestPets() {
+        setLoading(true);
+        const data = processData();
+        const { data: { animals, pagination } } = await client.animal.search(data);
+        const hasNextPage = pagination.current_page < pagination.total_pages
+        setPets(animals);
+        setHasNext(hasNextPage);
+        setLoading(false);
     }
 
     const handlePageChange = async (newPage) => {
         setPage(newPage);
-        await requestPets(newPage);
+        await requestPets();
+    }
+
+    function processData() {
+        let outputData = {};
+        const data = {
+            type: animal,
+            breed,
+            page,
+            limit: 20
+        };
+        console.log('**** data to be processed ****', data);
+        for (let key in data) {
+            if (data[key] !== undefined && data[key] !== null) {
+                outputData[key] = data[key]
+            }
+        }
+        return outputData;
     }
 
     return (
@@ -72,8 +92,8 @@ const SearchParams = () => {
                         onBlur={(e) => updateBreed(e.target.value)}>
                         <option />
                         {breeds.map((breed) => (
-                            <option key={breed} value={breed}>
-                                {breed}
+                            <option key={breed.name} value={breed.name}>
+                                {breed.name}
                             </option>
                         ))}
                     </select>
@@ -93,7 +113,7 @@ const SearchParams = () => {
                 </label>
                 <button style={{ backgroundColor: theme }}>Submit</button>;
             </form>
-            <Results pets={pets} />
+            <Results pets={pets} loading={loading} />
             <Paginator page={page} hasNext={hasNext} handlePageChange={handlePageChange} />
         </div>
     );
