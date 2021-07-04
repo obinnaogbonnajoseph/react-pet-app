@@ -55,8 +55,8 @@ const SearchParams = () => {
     }
 
     return (
-        <div className="search-params">
-            <form onSubmit={e => {
+        <div className="my-0 mx-auto w-11/12">
+            <form className="p-10 mb-10 rounded-lg bg-gray-200 shadow-lg flex flex-col justify-center items-center divide-y divide-gray-900" onSubmit={e => {
                 e.preventDefault();
                 requestPets();
             }}>
