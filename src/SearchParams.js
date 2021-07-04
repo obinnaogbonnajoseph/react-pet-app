@@ -70,6 +70,7 @@ const SearchParams = () => {
                     Animal
                     <select
                         id="animal"
+                        className="w-60"
                         value={animal}
                         onChange={(e) => updateAnimal(e.target.value)}
                         onBlur={(e) => updateAnimal(e.target.value)}>
@@ -85,6 +86,7 @@ const SearchParams = () => {
                     Breed
                     <select
                         disabled={!breeds.length}
+                        className="w-60 disabled:opacity-50"
                         id="breed"
                         value={breed}
                         onChange={(e) => updateBreed(e.target.value)}
@@ -101,6 +103,7 @@ const SearchParams = () => {
                     Theme
                     <select
                         value={theme}
+                        className="w-60"
                         onChange={(e) => setTheme(e.target.value)}
                         onBlur={(e) => setTheme(e.target.value)}
                     >
@@ -110,7 +113,7 @@ const SearchParams = () => {
                         <option value="mediumorchid">Medium Orchid</option>
                     </select>
                 </label>
-                <button style={{ backgroundColor: theme }}>Submit</button>;
+                <button className="rounded px-6 py-2 color text-white hover:opacity-50 border-none" style={{ backgroundColor: theme }}>Submit</button>;
             </form>
             <Results pets={pets} loading={loading} />
             <Paginator page={page} hasNext={hasNext} handlePageChange={handlePageChange} />
